@@ -15,6 +15,7 @@ RUN dnf install -y \
         valgrind \
         zip \
         file \
+        rpm-build \
         && dnf clean all
 
 # Install cmake

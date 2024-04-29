@@ -88,6 +88,9 @@ endif()
 # Debian packaging
 include(debian.cmake)
 
+# Fedora packaging
+include(fedora.cmake)
+
 # testing
 include(CTest)
 

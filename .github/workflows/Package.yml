@@ -51,10 +51,10 @@ jobs:
       -name: Download installers
        uses: actions/download-artifact@v4
        with:
-          name: Installers
+         name: Installers
 
       -name: Confirm
-      run: |
+       run: |
         ls -lh build/*.deb
 
       #   working-directory: build

@@ -1,0 +1,74 @@
+---
+name: Package
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04]
+    runs-on: ubuntu_latest
+    timeout-minutes: 10
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create build directory
+        shell: bash
+        run: mkdir build
+
+      - name: Setup packages
+        shell: bash
+        run :
+          sudo apt-get install ninja-build
+
+      - name: CMake Setup
+        working-directory: build
+        shell: bash
+        run: |
+          cmake .. -G Ninja
+
+      - name: Build
+        working-directory: build
+        shell: bash
+        run: |
+          cmake --build . --config Release --target all
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Executable-${{matrix.os}}
+          path: |
+            build/srccomplexity
+
+      - name: Install
+        working-directory: build
+        shell: bash
+        run: |
+          cmake --build . --config Release --target install/strip
+
+      - name: Run
+        working-directory: build
+        shell: bash
+        run: |
+          srccomplexity < ../srcMLXPathCount.cpp.xml
+
+      # - name: Install srcml
+      #   working-directory: build
+      #   shell: bash
+      #   run: |
+      #     curl -L -O http://131.123.42.41/srcml_1.0.0-1_ubuntu22.04_x86_64.deb
+      #     sudo apt-get install ./srcml*.deb
+
+      # - name: Test
+      #   working-directory: build
+      #   shell: bash
+      #   continue-on-error: true
+      #   run: |
+      #     ctest --verbose | tee TestResults.log
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Test.${{matrix.os}}.log
+      #     path: |
+      #       build/Testing/Temporary/LastTest.log
+      #       build/TestResults.log

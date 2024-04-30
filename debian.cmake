@@ -1,10 +1,4 @@
-# General package name
-set(CPACK_PACKAGE_NAME srccomplexity)
-
-# Determine Linux distribution
-if(UNIX AND NOT APPLE)
-    cmake_host_system_information(RESULT DISTRO QUERY DISTRIB_NAME)
-endif()
+# Debian packaging
 
 if(NOT DISTRO MATCHES "Ubuntu")
     return()

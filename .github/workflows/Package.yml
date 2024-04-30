@@ -5,10 +5,7 @@ on: workflow_dispatch
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04]
-    runs-on: ubuntu_latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
 
@@ -35,25 +32,18 @@ jobs:
         shell: bash
         run: |
           cmake --build . --config Release --target all
-      - uses: actions/upload-artifact@v4
+
+      - name: Package
+        working-directory: build
+        shell: bash
+        run: |
+          cpack -G DEB
+      - uses: actions/upload-artifacts@v4
         with:
-          name: Executable-${{matrix.os}}
+          name: Installers
           path: |
-            build/srccomplexity
+            build/*.deb
 
-      - name: Install
-        working-directory: build
-        shell: bash
-        run: |
-          cmake --build . --config Release --target install/strip
-
-      - name: Run
-        working-directory: build
-        shell: bash
-        run: |
-          srccomplexity < ../srcMLXPathCount.cpp.xml
-
-      # - name: Install srcml
       #   working-directory: build
       #   shell: bash
       #   run: |

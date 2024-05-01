@@ -58,6 +58,18 @@ install(TARGETS srcMLXPathCount_static COMPONENT DEVELOPER)
 include(GNUInstallDirs)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/srcMLXPathCount.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT DEVELOPER)
 
+# Run ldconfig for install (not cpack) on Ubuntu
+# The component is for ignoring in cpack
+if(DISTRO AND DISTRO MATCHES "Ubuntu")
+    find_program(LDCONFIG ldconfig)
+    if(LDCONFIG)
+        install(CODE "message(STATUS \"Running: ldconfig\")" COMPONENT LOCAL)
+        install(CODE "execute_process(COMMAND ${LDCONFIG})" COMPONENT LOCAL)
+    else()
+        install(CODE "message(NOTICE \"   NOTE: Unable to run ldconfig. Library libsrcml.so may not be found.\n   Suggest running ldconfig manually.\")" COMPONENT LOCAL)
+    endif()
+endif()
+
 # packaging
 include(CPackComponent)
 cpack_add_component(CLIENT
@@ -76,6 +88,10 @@ cpack_add_component(DEVELOPER
                     DISPLAY_NAME "libsrcMLXPathCount Developer"
                     DESCRIPTION "Include file, development libraries, i.e.., static library"
                     INSTALL_TYPES DEVELOPER)
+
+# Hide the LOCAL components
+get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
+list(REMOVE_ITEM CPACK_COMPONENTS_ALL "LOCAL")
 
 # General package name
 set(CPACK_PACKAGE_NAME srccomplexity)

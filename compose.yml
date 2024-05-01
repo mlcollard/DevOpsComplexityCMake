@@ -74,7 +74,7 @@ services:
     <<: *CONFIGURATION
 
   fedora_41:
-    image: srccomplexity/fedora:41
+    image: mlcollard/fedora:41
     platform: ${PLATFORM}
     build:
       context: docker/fedora/

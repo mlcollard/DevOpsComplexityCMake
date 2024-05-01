@@ -25,8 +25,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install cmake
-# Install cmake
-# Install direct binary for Ubuntu 20.04
+# Install direct binary
 ARG TAG
 ENV TAG=$TAG
 ARG CMAKE_BINARY
